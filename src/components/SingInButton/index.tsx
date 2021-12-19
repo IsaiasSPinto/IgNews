@@ -3,7 +3,7 @@ import style from './styles.module.scss'
 import {FiX} from 'react-icons/fi'
  
 export default function SingInButon() {
-    const isUserLogged = true
+    const isUserLogged = false
 
 
     return isUserLogged ? (
