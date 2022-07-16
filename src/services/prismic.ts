@@ -5,7 +5,7 @@ const endpoint = sm.apiEndpoint
 const repositoryName = prismic.getRepositoryName(endpoint)
 
 // This factory function allows smooth preview setup
-export function getPrismicClient() {
+export function getPrismicClient(req?) {
   const client = prismic.createClient(
     repositoryName,
     {

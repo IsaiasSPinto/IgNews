@@ -2,10 +2,11 @@ import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { getPrismicClient } from '../../services/prismic';
 import styles from './styles.module.scss';
-import { RichText } from 'prismic-dom';
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 type Post = {
-    slug: string;
+    uid: string;
     title: string;
     excerpt: string;
     updatedAt: string;
@@ -16,6 +17,9 @@ interface PostsProps {
 }
 
 export default function Posts({ posts }: PostsProps) {
+    const {data} = useSession()
+
+
     return (
         <>
             <Head>
@@ -25,12 +29,14 @@ export default function Posts({ posts }: PostsProps) {
             <main className={styles.container}>
                 <div className={styles.posts}>
                     {posts.map(post => (
-                        <a key={post.slug} href="">
-                            <time>{post.updatedAt}</time>
-                            <strong>{post.title}</strong>
-                            <p>{post.excerpt}</p>
-                        </a>
-                    ))}                 
+                        <Link href={`/posts/${post.uid}`} >
+                            <a key={post.uid}>
+                                <time>{post.updatedAt}</time>
+                                <strong>{post.title}</strong>
+                                <p>{post.excerpt}</p>
+                            </a>
+                        </Link>
+                    ))}
                 </div>
             </main>
 
@@ -46,7 +52,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
     const posts = response.results.map(post => {
         return {
-            slug: post.uid,
+            uid: post.uid,
             title: post.data.Tittle,
             excerpt: post.data.Content.find(content => content.type === 'paragraph')?.text ?? '',
             updatedAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
